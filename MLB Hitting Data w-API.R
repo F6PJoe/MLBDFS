@@ -17,6 +17,20 @@ library(googlesheets4)
 library(googledrive)
 library(lubridate)
 
+
+# Get the base64-encoded JSON string from the environment variable
+json_key_base64 <- Sys.getenv("GCP_SHEETS_KEY_B64")
+
+# Decode the base64 string into the JSON content
+json_key <- rawToChar(base64_decode(json_key_base64))
+
+# Write the decoded JSON content to a temporary file
+temp_json_file <- tempfile(fileext = ".json")
+writeLines(json_key, temp_json_file)
+
+# Use the temporary JSON file for authentication
+gs4_auth(path = temp_json_file)
+
 # Path to your service account JSON key file
 #json_file <- "C:/Users/jbond/OneDrive/Documents/FBBall Bluecollar Script/nba-dfs-451519-a7658fdd6619.json"
 
@@ -27,7 +41,7 @@ library(lubridate)
 
 #gs4_auth(cache = ".secrets", email = "joebond008@gmail.com")
 
-gs4_auth(path = "C:/Users/jbond/OneDrive/Documents/MLB Data/triple-baton-456523-e4-b9ec3cbd6e3d.json")
+#gs4_auth(path = "C:/Users/jbond/OneDrive/Documents/MLB Data/triple-baton-456523-e4-b9ec3cbd6e3d.json")
 
 # # Read the sheet without manual authentication
 # sheet_url <- "https://docs.google.com/spreadsheets/d/your_google_sheet_id_here"
@@ -36,8 +50,8 @@ gs4_auth(path = "C:/Users/jbond/OneDrive/Documents/MLB Data/triple-baton-456523-
 # print(df)
 
 # set working directory
-setwd("C:/Users/jbond/OneDrive/Documents/")
-source("FBBall Bluecollar Script/functions.R")
+#setwd("C:/Users/jbond/OneDrive/Documents/")
+#source("FBBall Bluecollar Script/functions.R")
 #excludeT <- c("DET", "WAS")
 
 # Define API endpoint for FanDuel data
