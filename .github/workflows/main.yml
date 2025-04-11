@@ -32,7 +32,7 @@ jobs:
 
     - name: Install R packages
       run: |
-        Rscript -e 'install.packages(c("googlesheets4", "base64enc", "httr", "dplyr", "tidyverse", "lubridate", "XML", "RCurl", "stringr", "rjson", "plyr", "magrittr", "googledrive"))'
+        Rscript -e 'install.packages(c("googlesheets4", "googledrive", "dplyr", "lubridate", "stringr", "rjson", "httr", "base64enc", "magrittr", "plyr", "RCurl", "XML"))'
     
     - name: Run R script
       run: |
