@@ -15,9 +15,7 @@ jobs:
       uses: actions/checkout@v2
 
     - name: Set up R
-      uses: rocker/r-ver@v4.0.5
-      with:
-        r-version: '4.0.5'
+      uses: rocker/r-ver@latest  # Use the latest version instead of v4.0.5
 
     - name: Install R dependencies
       run: |
