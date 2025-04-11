@@ -37,5 +37,8 @@ jobs:
         Rscript -e 'cat("Loaded packages:\n"); print(.packages())'
     
     - name: Run R script
+      env:
+        GCP_SHEETS_KEY_B64: ${{ secrets.GCP_SHEETS_KEY_B64 }}
       run: |
         Rscript "MLB DFS.R"
+
