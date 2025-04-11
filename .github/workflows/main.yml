@@ -1,0 +1,28 @@
+name: Run MLB DFS R Script
+
+on:
+  schedule:
+    # Runs every 15 minutes between 2:00 PM UTC (10:00 AM ET) and 1:30 AM UTC (9:30 PM ET)
+    - cron: '0,15,30,45 14-20 * * *'  # Runs every 15 minutes from 10:00 AM - 9:30 PM ET
+  workflow_dispatch:  # Allow manual trigger from GitHub Actions UI
+
+jobs:
+  run_r_script:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v2
+
+    - name: Set up R
+      uses: rocker/r-ver@v4.1.0  # Specify the R version you need
+
+    - name: Install required R packages
+      run: |
+        R -e "install.packages('googlesheets4')"
+        R -e "install.packages('httr')"
+        # Add any other R packages your script needs
+
+    - name: Run R Script
+      run: |
+        Rscript "MLB Hitting Data w-API.R"
