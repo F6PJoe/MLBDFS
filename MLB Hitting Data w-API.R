@@ -3,7 +3,7 @@ cat("\014")
 rm(list = ls())
 
 # List of required packages
-packages <- c("XML", "RCurl", "stringr", "rjson", "plyr", "dplyr", "httr", "jsonlite", "tidyverse", "magrittr", "googlesheets4", "googledrive", "lubridate")
+packages <- c("XML", "RCurl", "stringr", "rjson", "plyr", "dplyr", "httr", "jsonlite", "magrittr", "googlesheets4", "googledrive", "lubridate")
 
 # Install any missing packages
 for (pkg in packages) {
@@ -21,7 +21,7 @@ library(plyr)
 library(dplyr)
 library(httr)
 library(jsonlite)
-library(tidyverse)
+#library(tidyverse)
 library(magrittr)
 library(googlesheets4)
 library(googledrive)
