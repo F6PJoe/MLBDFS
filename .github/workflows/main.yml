@@ -1,11 +1,9 @@
 name: Run MLB DFS R Script
 
-# on:
-#   schedule:
-#     - cron: '0,15,30,45 14-20 * * *'  # Disabled schedule
-#   workflow_dispatch:  # Disabled manual trigger
-
-# Temporarily disabling all triggers above — uncomment when ready to resume
+on:
+  workflow_dispatch:  # Enables manual trigger from GitHub UI
+  # schedule:
+  #   - cron: '0,15,30,45 14-20 * * *'  # Still disabled
 
 jobs:
   run_script:
