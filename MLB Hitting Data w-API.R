@@ -2,6 +2,16 @@
 cat("\014")
 rm(list = ls())
 
+# List of required packages
+packages <- c("XML", "RCurl", "stringr", "rjson", "plyr", "dplyr", "httr", "jsonlite", "tidyverse", "magrittr", "googlesheets4", "googledrive", "lubridate")
+
+# Install any missing packages
+for (pkg in packages) {
+  if (!requireNamespace(pkg, quietly = TRUE)) {
+    install.packages(pkg)
+  }
+}
+
 # load packages
 library(XML)
 library(RCurl)
