@@ -37,7 +37,7 @@ library(base64enc)  # <-- Added this line
 json_key_base64 <- Sys.getenv("GCP_SHEETS_KEY_B64")
 
 # Decode the base64 string into the JSON content
-json_key <- rawToChar(base64_decode(json_key_base64))
+json_key <- rawToChar(base64enc::base64_decode(json_key_base64))
 
 # Write the decoded JSON content to a temporary file
 temp_json_file <- tempfile(fileext = ".json")
