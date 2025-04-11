@@ -3,7 +3,11 @@ cat("\014")
 rm(list = ls())
 
 # List of required packages
-packages <- c("XML", "RCurl", "stringr", "rjson", "plyr", "dplyr", "httr", "jsonlite", "magrittr", "googlesheets4", "googledrive", "lubridate")
+packages <- c(
+  "XML", "RCurl", "stringr", "rjson", "plyr", "dplyr", "httr",
+  "jsonlite", "magrittr", "googlesheets4", "googledrive",
+  "lubridate", "base64enc"  # <-- Added base64enc here
+)
 
 # Install any missing packages
 for (pkg in packages) {
@@ -26,6 +30,7 @@ library(magrittr)
 library(googlesheets4)
 library(googledrive)
 library(lubridate)
+library(base64enc)  # <-- Added this line
 
 
 # Get the base64-encoded JSON string from the environment variable
