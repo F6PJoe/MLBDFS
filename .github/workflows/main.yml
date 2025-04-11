@@ -2,8 +2,9 @@ name: Run MLB DFS R Script
 
 on:
   workflow_dispatch:  # Enables manual trigger from GitHub UI
-  # schedule:
-  #   - cron: '0,15,30,45 14-20 * * *'  # Still disabled
+  schedule:
+    - cron: '*/15 14-23 * * *'  # 10 a.m. to 7 p.m. ET
+    - cron: '*/15 0-1 * * *'    # 8 p.m. to 10 p.m. ET
 
 jobs:
   run_script:
