@@ -34,13 +34,16 @@ jobs:
 
     - name: Install R packages
       run: |
-        install.packages(c(
+        Rscript -e 'install.packages(c(
           "googlesheets4", "googledrive", "dplyr", "lubridate",
           "stringr", "rjson", "httr", "base64enc", "magrittr",
           "plyr", "RCurl", "XML", "jsonlite"
-        ))
-
-    - name: Run R script
+        ))'
+    
+    - name: Check installed R packages
       run: |
         Rscript -e 'cat("Loaded packages:\n"); print(.packages())'
+    
+    - name: Run R script
+      run: |
         Rscript "MLB Hitting Data w-API.R"
