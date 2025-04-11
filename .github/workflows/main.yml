@@ -2,15 +2,12 @@ name: Run MLB DFS R Script
 
 on:
   schedule:
-    # Runs every 15 minutes between 10:00 AM ET and 9:30 PM ET (2:00 PM to 1:30 AM UTC)
     - cron: '0,15,30,45 14-20 * * *'
-  workflow_dispatch:  # Allow manual trigger from GitHub Actions UI
+  workflow_dispatch:
 
 jobs:
   run_script:
     runs-on: ubuntu-latest
-    env:
-      R_LIBS_USER: ~/.R/library
 
     steps:
     - name: Checkout code
@@ -23,7 +20,7 @@ jobs:
       uses: actions/cache@v3
       with:
         path: ${{ env.R_LIBS_USER }}
-        key: ${{ runner.os }}-r-${{ hashFiles('**/*.R') }}
+        key: ${{ runner.os }}-r-${{ hashFiles('**/*.lock') }}
         restore-keys: |
           ${{ runner.os }}-r-
 
@@ -39,11 +36,12 @@ jobs:
           "stringr", "rjson", "httr", "base64enc", "magrittr",
           "plyr", "RCurl", "XML", "jsonlite"
         ))'
-    
+
     - name: Check installed R packages
       run: |
         Rscript -e 'cat("Loaded packages:\n"); print(.packages())'
-    
+
     - name: Run R script
       run: |
+        Rscript -e 'library(base64enc); cat("base64enc loaded successfully\n")'
         Rscript "MLB Hitting Data w-API.R"
