@@ -3,21 +3,15 @@ name: Run MLB DFS R Script
 on:
   workflow_dispatch:  # Enables manual trigger from GitHub UI
   schedule:
-    # Mon–Fri: 10:30 a.m. – 4:00 p.m. ET (14:30–20:00 UTC) every 30 minutes
-    - cron: '30 14-19 * * 1-5'  # :30 of each hour
-    - cron: '0 15-19 * * 1-5'   # :00 of each hour
-    - cron: '0 20 * * 1-5'      # final run at 4:00 p.m. ET
+    # Every day: 11:00 AM – 1:30 PM ET (every 15 minutes)
+    - cron: '0,15,30,45 16-18 * * *'  # Every 15 minutes from 11:00 AM – 1:30 PM ET (16:00–18:30 UTC)
 
-    # Mon–Fri: 4:00 p.m. – 7:30 p.m. ET (20:00–23:30 UTC) every 15 minutes
-    - cron: '*/15 20-23 * * 1-5'
+    # Every day: 1:30 PM – 5:30 PM ET (every 30 minutes)
+    - cron: '0,30 19-22 * * *'        # Every 30 minutes from 1:30 PM – 5:30 PM ET (19:00–22:30 UTC)
 
-    # Mon–Fri: 7:30 p.m. – 10:00 p.m. ET (23:30–02:00 UTC next day)
-    - cron: '30 23 * * 1-5'     # 7:30 p.m. ET
-    - cron: '0,30 0-1 * * 2-6'  # 8:00, 8:30, 9:00, 9:30 p.m. ET (next day UTC)
+    # Every day: 5:30 PM – 10:00 PM ET (every 15 minutes)
+    - cron: '0,15,30,45 22-30 * * *'   # Every 15 minutes from 5:30 PM – 10:00 PM ET (22:30–30:00 UTC)
 
-    # Sat–Sun: 10:30 a.m. to 7:00 p.m. ET (14:30–23:00 UTC) every 30 minutes
-    - cron: '30 14-22 * * 6,0'  # :30 from 10:30 a.m. to 6:30 p.m. ET
-    - cron: '0 15-23 * * 6,0'   # :00 from 11:00 a.m. to 7:00 p.m. ET
 
 jobs:
   run_script:
