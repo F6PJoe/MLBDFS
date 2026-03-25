@@ -30,15 +30,33 @@ get_processed_slate <- function(api_url) {
   data <- content(response, "parsed", simplifyVector = TRUE)
   slates <- data$slates
   
-  # Find slate column containing "MAIN" or fallback
   text_cols <- names(slates)[sapply(slates, is.character)]
-  slate_col <- text_cols[which(sapply(text_cols, function(col) any(grepl("MAIN", slates[[col]], ignore.case = TRUE))))]
-  if (length(slate_col) == 0) {
-    slate_col <- text_cols[which(sapply(text_cols, function(col) any(grepl("ALL|ALL DAY", slates[[col]], ignore.case = TRUE))))]
-  }
-  if (length(slate_col) == 0) stop("No matching slate found.")
   
-  slate_index <- which(grepl("MAIN|ALL|ALL DAY", slates[[slate_col[1]]], ignore.case = TRUE))[1]
+  # Try MAIN first, then ALL DAY / ALL, then fallback to largest slate
+  slate_index <- NA
+  for (col in text_cols) {
+    idx <- which(grepl("MAIN", slates[[col]], ignore.case = TRUE))[1]
+    if (!is.na(idx)) { slate_index <- idx; break }
+  }
+  
+  if (is.na(slate_index)) {
+    for (col in text_cols) {
+      idx <- which(grepl("ALL DAY|ALL", slates[[col]], ignore.case = TRUE))[1]
+      if (!is.na(idx)) { slate_index <- idx; break }
+    }
+  }
+  
+  # Fallback: pick the slate with the most players
+  if (is.na(slate_index)) {
+    player_counts <- sapply(seq_along(data$slates$info), function(i) {
+      info <- data$slates$info[[i]]
+      if (is.data.frame(info)) nrow(info) else 0
+    })
+    slate_index <- which.max(player_counts)
+    message("No MAIN/ALL DAY slate found. Using slate index ", slate_index,
+            " with ", player_counts[slate_index], " players.")
+  }
+  
   df <- data$slates$info[[slate_index]]
   names(df) <- c("Opp", "Player", "ID", "Pos", "Team", "Proj", "Salary", "Beta", "Value")
   
@@ -46,7 +64,7 @@ get_processed_slate <- function(api_url) {
   df$Salary <- as.numeric(df$Salary)
   df$Value <- round(as.numeric(df$Value), 1)
   df <- df[!is.na(df$Proj) & df$Proj > 0, ]
-
+  
   # Handle multi-position players
   df$OptPos <- df$Pos
   dualPos <- grepl("/", df$Pos)
@@ -55,7 +73,6 @@ get_processed_slate <- function(api_url) {
   df$Pos[dualPos] <- sub("/", "", str_extract(df$Pos[dualPos], "^[A-Z0-9]{1,2}/"))
   df$Pos1 <- df$Pos
   df$Pos <- df$OptPos
-
   arrange(df, desc(Proj))
 }
 
