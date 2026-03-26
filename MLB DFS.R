@@ -8,11 +8,7 @@ packages <- c(
   "jsonlite", "magrittr", "googlesheets4", "googledrive",
   "lubridate", "base64enc"
 )
-
-for (pkg in packages) {
-  if (!requireNamespace(pkg, quietly = TRUE)) install.packages(pkg)
-  library(pkg, character.only = TRUE)
-}
+invisible(lapply(packages, library, character.only = TRUE))
 
 # Decode Google Sheets credentials from env var and authenticate
 json_key <- rawToChar(base64decode(Sys.getenv("GCP_SHEETS_KEY_B64")))
@@ -28,22 +24,18 @@ get_processed_slate <- function(api_url) {
   ))
   data <- content(response, "parsed", simplifyVector = TRUE)
   slates <- data$slates
-
   text_cols <- names(slates)[sapply(slates, is.character)]
-
   slate_index <- NA
   for (col in text_cols) {
     idx <- which(grepl("MAIN", slates[[col]], ignore.case = TRUE))[1]
     if (!is.na(idx)) { slate_index <- idx; break }
   }
-
   if (is.na(slate_index)) {
     for (col in text_cols) {
       idx <- which(grepl("ALL DAY|ALL", slates[[col]], ignore.case = TRUE))[1]
       if (!is.na(idx)) { slate_index <- idx; break }
     }
   }
-
   if (is.na(slate_index)) {
     player_counts <- sapply(seq_along(data$slates$info), function(i) {
       info <- data$slates$info[[i]]
@@ -53,9 +45,7 @@ get_processed_slate <- function(api_url) {
     message("No MAIN/ALL DAY slate found. Using slate index ", slate_index,
             " with ", player_counts[slate_index], " players.")
   }
-
   df <- data$slates$info[[slate_index]]
-
   df <- df %>% rename(
     Opp    = opponent,
     Player = name,
@@ -67,17 +57,14 @@ get_processed_slate <- function(api_url) {
     Beta   = beta_proj,
     Value  = value
   )
-
   df$Proj   <- round(as.numeric(df$Proj), 2)
   df$Salary <- as.numeric(df$Salary)
   df$Value  <- round(as.numeric(df$Value), 1)
   df <- df[!is.na(df$Proj) & df$Proj > 0, ]
-
   if (nrow(df) == 0) {
     warning("Slate index ", slate_index, " (", slates$slate[slate_index], ") has no players with valid projections yet. Returning empty data frame.")
     return(df)
   }
-
   # Handle multi-position players
   df$OptPos <- df$Pos
   dualPos <- grepl("/", df$Pos)
@@ -106,6 +93,5 @@ sheet_write(dk[, c("Player", "Proj", "Salary", "Value", "Pos", "Team", "Opp")], 
 update_time    <- with_tz(Sys.time(), "America/New_York")
 formatted_date <- format(update_time, "%B %d, %Y")
 formatted_time <- format(update_time, "%I:%M %p ET")
-
 range_write(ss = gs_url_time, data = data.frame(Date = formatted_date), sheet = "MLB Update Time", range = "A2", col_names = FALSE)
 range_write(ss = gs_url_time, data = data.frame(Time = formatted_time), sheet = "MLB Update Time", range = "B2", col_names = FALSE)
